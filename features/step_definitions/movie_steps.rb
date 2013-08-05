@@ -26,3 +26,18 @@ When /I (un)?check the following ratings: (.*)/ do |uncheck, rating_list|
   #   iterate over the ratings and reuse the "When I check..." or
   #   "When I uncheck..." steps in lines 89-95 of web_steps.rb
 end
+
+Given /I have added "(.*)" with rating "(.*)"/ do |title, rating|
+  steps %Q{
+        Given I am on the Create New Movie page
+        When  I fill in "Title" with "#{title}"
+        And   I select "#{rating}" from "Rating"
+        And   I press "Save Changes"
+      }
+end
+
+Then /I should see "(.*)" before "(.*)" on (.*)/ do |string1, string2, path|
+  step "I am on #{path}"
+  regexp = /#{string1}.*#{string2}/m #  /m means match across newlines
+  page.body.should =~ regexp
+end
