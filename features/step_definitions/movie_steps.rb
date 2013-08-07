@@ -48,9 +48,9 @@ end
 Then /I (don't )?see movies with the following ratings: (.*)/ do |dont, rating_list|
   rating_list.split(', ').each do |rating|
     if dont.nil?
-      page.should have_css("table#movies tr##{rating}")
+      page.should have_css("table#movies tbody td", :text => "#{rating}")
     else
-      page.should_not have_css("table#movies tr##{rating}")
+      page.should_not have_css("table#movies tbody td", :text => "#{rating}")
     end
   end
 end
