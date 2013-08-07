@@ -56,7 +56,6 @@ Then /I (don't )?see movies with the following ratings: (.*)/ do |dont, rating_l
 end
 
 Then(/^I should see all the movies$/) do
-  debugger
   page.all('table#movies tbody tr').count.should == Movie.all.count
 end
 
