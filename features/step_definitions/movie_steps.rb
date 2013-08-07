@@ -25,6 +25,9 @@ When /I (un)?check the following ratings: (.*)/ do |uncheck, rating_list|
   # HINT: use String#split to split up the rating_list, then
   #   iterate over the ratings and reuse the "When I check..." or
   #   "When I uncheck..." steps in lines 89-95 of web_steps.rb
+  rating_list.split(', ').each do |rating|
+    uncheck.nil? ? check(rating) : uncheck(rating)
+  end
 end
 
 #Given /I have added "(.*)" with rating "(.*)"/ do |title, rating|
@@ -41,3 +44,26 @@ end
 #  regexp = /#{string1}.*#{string2}/m #  /m means match across newlines
 #  page.body.should =~ regexp
 #end
+
+Then /I (don't )?see movies with the following ratings: (.*)/ do |dont, rating_list|
+  rating_list.split(', ').each do |rating|
+    if dont.nil?
+      page.should have_css("table#movies tr##{rating}")
+    else
+      page.should_not have_css("table#movies tr##{rating}")
+    end
+  end
+end
+
+Then(/^I should see all the movies$/) do
+  debugger
+  page.all('table#movies tbody tr').count.should == Movie.all.count
+end
+
+Then(/^I should see '(.*)' before '(.*)'.$/) do |string1, string2|
+  page.body.should =~ /#{string1}.*#{string2}/m
+end
+Then(/^I should see dates '(.*)' before '(.*)'.$/) do |date1, date2|
+  date1, date2 = [date1, date2].each { |date| Date.strptime(date, '%d-%b-%Y').strftime('%Y-%m-%d') }
+  page.body.should =~ /#{date1}.*#{date2}/m
+end
